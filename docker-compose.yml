@@ -1,37 +1,33 @@
 services:
   db:
     image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-quiz}
-      POSTGRES_USER: ${POSTGRES_USER:-quiz}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-quiz}
+    env_file:
+      - path: ./backend/.env.example
+        required: true
+      - path: ./backend/.env
+        required: false
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       # Host 5433 -> container 5432 to avoid clashing with a local postgres on 5432.
       - "5433:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-quiz} -d ${POSTGRES_DB:-quiz}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     env_file:
-      - ./backend/.env
-    environment:
-      POSTGRES_HOST: db
+      - path: ./backend/.env.example
+        required: true
+      - path: ./backend/.env
+        required: false
     volumes:
       - ./backend:/app
     ports:
       # Frontend client expects http://localhost:8080/api -> map host 8080 to django 8000
       - "8080:8000"
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     command: python manage.py runserver 0.0.0.0:8000
 
   frontend:
