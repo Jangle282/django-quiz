@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - path: ./backend/.env.example
+        required: true
+      - path: ./backend/.env
+        required: false
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      # Host 5433 -> container 5432 to avoid clashing with a local postgres on 5432.
+      - "5433:5432"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - path: ./backend/.env.example
+        required: true
+      - path: ./backend/.env
+        required: false
+    volumes:
+      - ./backend:/app
+    ports:
+      # Frontend client expects http://localhost:8080/api -> map host 8080 to django 8000
+      - "8080:8000"
+    depends_on:
+      - db
+    command: python manage.py runserver 0.0.0.0:8000
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      # Browser-side var; build-time injected by Vite. Backend runs on host:8080.
+      VITE_API_BASE_URL: http://localhost:8080/api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
