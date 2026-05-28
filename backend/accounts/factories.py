@@ -1,6 +1,8 @@
 """Factories for the accounts app. Used by tests and the seed command."""
 from __future__ import annotations
 
+from typing import cast
+
 import factory
 from factory.django import DjangoModelFactory
 
@@ -14,10 +16,10 @@ class UserFactory(DjangoModelFactory):
 
     username = factory.Sequence(lambda n: f"user{n}")
 
-    @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        password = kwargs.pop("password", "P@ssword12345")
-        user = model_class(*args, **kwargs)
-        user.set_password(password)
+    @factory.post_generation
+    def password(self, created, extracted, **kwargs):
+        if not created:
+            return
+        user = cast(User, self)
+        user.set_password(extracted or "P@ssword12345")
         user.save()
-        return user

@@ -7,7 +7,8 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 
-from quiz.models import Answer, Difficulty, Game, Question, Round, UserGame
+from quiz.models import Answer, Category, Difficulty, Game, Question, Round, UserGame
+from accounts.models import User
 
 
 pytestmark = pytest.mark.django_db
@@ -34,3 +35,18 @@ def test_seed_demo_creates_required_fixtures():
     assert (
         Answer.objects.filter(question__round=round_one, is_correct=True).count() == 5
     )
+
+def test_seed_isidempotent():
+    call_command("seed_demo", stdout=StringIO())
+    assert Game.objects.count() == 1
+    assert User.objects.count() == 1
+    assert Difficulty.objects.count() == 3
+    assert Category.objects.count() == 1
+
+    # Call the command again and ensure it doesn't result in an error
+    call_command("seed_demo", stdout=StringIO())
+
+    assert Game.objects.count() == 2
+    assert User.objects.count() == 1
+    assert Difficulty.objects.count() == 3
+    assert Category.objects.count() == 1
