@@ -16,13 +16,14 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    working_dir: /workspaces/py-django-quiz/backend
     env_file:
       - path: ./backend/.env.example
         required: true
       - path: ./backend/.env
         required: false
     volumes:
-      - ./backend:/app
+      - ./:/workspaces/py-django-quiz
     ports:
       # Frontend client expects http://localhost:8080/api -> map host 8080 to django 8000
       - "8080:8000"
