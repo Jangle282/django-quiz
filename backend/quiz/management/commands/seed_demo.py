@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options) -> None:
-        easy = DifficultyFactory(name="easy")
+        DifficultyFactory(name="easy")
         medium = DifficultyFactory(name="medium")
         DifficultyFactory(name="hard")
 
@@ -73,10 +73,6 @@ class Command(BaseCommand):
                     is_correct=(answer_index == 0),
                     user_selected=(answer_index == 0),
                 )
-
-        # Silence the unused-easy warning for the linter while keeping the
-        # call so all three difficulties are guaranteed to exist after seeding.
-        _ = easy
 
         self.stdout.write(
             self.style.SUCCESS(
