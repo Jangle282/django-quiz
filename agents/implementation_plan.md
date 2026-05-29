@@ -121,7 +121,7 @@ Columns
 
 ---
 
-## Phase 3: Create skeleton API 
+## Phase 3: Create skeleton API & Auth routes 
 
 ### 3.1 Health endpoint and basic test set up
 - Implement `/api/health` endpoint for readiness/liveness checks
