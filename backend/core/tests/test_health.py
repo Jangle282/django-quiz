@@ -39,6 +39,7 @@ def _reset_throttle_cache():
 
 def test_health_endpoint_reverse_matches_contract_path():
     # If someone renames the URL we want the contract path to keep working.
+    # HUMAN NOTES: reverse() analoguous to route(). core:health is <app_name>:<route_name>.
     assert reverse("core:health") == HEALTH_URL
 
 

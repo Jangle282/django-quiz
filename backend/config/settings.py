@@ -39,7 +39,6 @@ INSTALLED_APPS = [
 
 # DRF: global defaults so individual views never re-declare throttling.
 # Authenticated endpoints will throttle by user id, unauthenticated by IP.
-# HUMAN NOTES: 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": [
