@@ -1,0 +1,68 @@
+DB migrations
+Truncate data - keep schemas and tables
+python manage.py flush --no-input
+
+Drop and recreate tables per app 
+Python manage.py migrate quiz zero
+python manage.py migrate accounts zero
+
+Run migrations 
+python manage.py migrate
+Run the initial seeder
+python manage.py seed_demo
+
+
+
+
+Laravel MVC Model view controller 
+Django MTV Model template view
+
+Template is HTML rendered - same thing and MVC view
+
+MTV View = MVC controller
+
+Mature projects have this structure per app
+app/
+  serializers.py    # request/response classes (one per shape)
+  views.py          # slim controllers, call services, hand to serializers
+  services.py       # business logic
+  repositories.py   # DB access
+  models.py
+
+
+
+Serializers are like combined Laravel Resource and Request classes. 
+Serializer.is_valid() = form validation
+Serializer.data = response resource structure
+There are other options available if they are too verbose e.g. (Pydantic / django-ninja)
+
+
+
+
+Routing Files:
+path() in xxx/urls.py registers routes
+Entry point for registering all routes is urlpatterns in config/urls.py
+URLResolver("")                       ← built from config.urls.urlpatterns
+└── URLResolver("api/")               ← path("api/", include(api_urlpatterns))
+    ├── URLResolver("")               ← include("core.urls")
+    │   └── URLPattern("health")      ← path("health", HealthView.as_view(), name="health")
+    ├── URLPattern("schema")          ← api_urlpatterns
+    ├── URLPattern("docs")            ← api_urlpatterns
+    └── URLPattern("redoc")           ← api_urlpatterns
+
+
+
+
+Throttling
+settings.py REST_FRAMEWORK declares the defautl throttled applied to every route. 
+can be overridden with custom classes in a view ... can it be applied to route groups...???
+DEFAULT_THROTTLE_RATES decalre the rates. and are looked up based on some naming conventions. 
+
+
+
+
+Python
+there is no reflection blocking in python
+_ convention for private method / variables
+__ convention for 'name mangling. accessing class methods Foo()._Foo__secret()
+__init__ - reserved for python . 
